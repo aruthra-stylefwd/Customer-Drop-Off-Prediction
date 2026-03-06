@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Customer Drop-Off Prediction</title>
+</head>
+
+<body>
+
+<h2>Customer Interaction Simulation</h2>
+
+<label>Session Time (minutes)</label>
+<input id="session"><br><br>
+
+<label>Pages Viewed</label>
+<input id="pages"><br><br>
+
+<label>Scroll Depth (%)</label>
+<input id="scroll"><br><br>
+
+<label>Idle Time (seconds)</label>
+<input id="idle"><br><br>
+
+<button onclick="predict()">Predict Churn</button>
+
+<h3 id="result"></h3>
+
+<script>
+
+async function predict(){
+
+let data = {
+session_time: document.getElementById("session").value,
+pages_viewed: document.getElementById("pages").value,
+scroll_depth: document.getElementById("scroll").value,
+idle_time: document.getElementById("idle").value
+}
+
+let response = await fetch("/predict",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+
+let result = await response.json()
+
+let probability = result.churn_probability
+
+document.getElementById("result").innerText =
+"Churn Probability: " + probability
+
+if(probability > 0.6){
+alert("User likely to drop off! Trigger intervention.")
+}
+
+}
+
+</script>
+
+</body>
+</html>
